@@ -16,7 +16,8 @@ int stree_search(struct Node **, char *);
 struct Node* path_exists(struct Node**, int);
 void alloc_node(struct Node**);
 void do_dfs(struct Node **,char *);
-int is_terminal_str(struct Node **cnode);
+int is_terminal_str(struct Node **);
+int stree_search_substr(struct Node **, char *);
 
 int main()
 {
@@ -26,21 +27,19 @@ int main()
     // Initialize root
     init_node(&root);
     // Input strings
-    stree_add_word(&root,str); 
-    stree_add_word(&root,str+1);
-    stree_add_word(&root,str+2);
-    stree_add_word(&root,str+3);
-    
     // Adding suffixes
-    //for(i=0;i<strlen(str);i++)
-    //    stree_add_word(&root,str+i);
-    
+    for(i=0;i<strlen(str)-1;i++){
+        printf("%s\n",(str+i));
+        stree_add_word(&root,str+i);
+    }
+    //stree_add_word(&root,"bat$");
+    //stree_add_word(&root,"cat$");
     // DFS to print out all strings
     printf("Strings:\n");
     do_dfs(&root,"");
    
    // Search for a string
-    if(stree_search(&root,str+4))
+    if(stree_search_substr(&root,"xy"))
         printf("Yes\n");
     else printf("No\n");
     return 0;
@@ -49,8 +48,24 @@ int is_terminal_str(struct Node **cnode)
 {
     if( (*cnode)->ptrs[get_i(EOS)] != NULL) return 1; else return 0;
 }
+int stree_search_substr(struct Node **root, char *substr)
+{
+    struct Node *temp = *root;
+    int flag = 0,i=0;
+    for(i=0;i<strlen(substr);i++){
+        if(temp->ptrs[get_i(substr[i])] != NULL){
+            temp = temp->ptrs[get_i(substr[i])];
+            flag = 1;
+        }
+        else {flag == 0;break;}
+    }
+    return flag;
+}
+        
 void do_dfs(struct Node **cnode,char *path)
 {
+    //DEBUG: 
+    //printf("1:%s\n",path);
     int i,j,cur_posn;
     
     char *temp = (char *)malloc(MAX_LEN*sizeof(char));
