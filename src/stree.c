@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-
+#define MAX_LEN 20
 #define MAX_ALPHA 26
 struct Node{
 int eos;
@@ -14,32 +14,48 @@ void stree_add_word(struct Node **,char *);
 int stree_search(struct Node **, char *);
 struct Node* path_exists(struct Node**, int);
 void alloc_node(struct Node**);
-void do_dfs(struct Node **);
+void do_dfs(struct Node **,char *);
 
 int main()
 {
     struct Node* root;
-    //struct node* stree;
+    int i = 0;
+    char *str = "yabadabadoo";
+    // Initialize root
     init_node(&root);
     // Input strings
-    stree_add_word(&root,"bat");
-    stree_add_word(&root,"cat");
+    stree_add_word(&root,str);
+    
+    stree_add_word(&root,str+1);
+    stree_add_word(&root,str+2);
+    stree_add_word(&root,str+3);
+    
+    // Adding suffixes
+    //for(i=0;i<strlen(str);i++)
+    //    stree_add_word(&root,str+i);
+
     // DFS to print out all strings
-    do_dfs(&root);
-    // Search for a string
-    if(stree_search(&root,"cat"))
+    printf("Strings:\n");
+    do_dfs(&root,"");
+   // Search for a string
+    if(stree_search(&root,str+4))
         printf("Yes\n");
     else printf("No\n");
     return 0;
 }
-void do_dfs(struct Node **cnode)
+void do_dfs(struct Node **cnode,char *path)
 {
-    int i;
-    if( (*cnode)->eos == 1) {printf("\n");return;}
+    int i,j,cur_posn;
+    
+    char *temp = (char *)malloc(MAX_LEN*sizeof(char));
+    strcpy(temp,path);
+    cur_posn = strlen(temp);
+    
+    if( (*cnode)->eos == 1) {printf("%s\n",temp);return;}
     for(i=0;i<MAX_ALPHA;i++){
         if( ((*cnode)->ptrs[i]) != NULL){
-            printf("%c",i+97);
-            do_dfs(&((*cnode)->ptrs[i]));
+            temp[cur_posn] = (i+97);
+            do_dfs(&((*cnode)->ptrs[i]),temp);
         }
     }
     return;
@@ -58,8 +74,9 @@ void alloc_node(struct Node** to_alloc)
 }
 struct Node* path_exists(struct Node** chk_node, int index)
 {
-    if((*chk_node)->ptrs[index] !=NULL)
+    if((*chk_node)->ptrs[index] !=NULL){
         return (*chk_node)->ptrs[index];
+    }
     else{
             // create new node
             struct Node* new_node;
