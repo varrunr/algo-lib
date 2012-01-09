@@ -21,7 +21,7 @@ int stree_search_substr(struct Node **, char *);
 
 int main()
 {
-    struct Node* root;
+    struct Node* root,temp;
     int i = 0;
     char *str = "yabadabadoo$";
     // Initialize root
@@ -32,6 +32,8 @@ int main()
         printf("%s\n",(str+i));
         stree_add_word(&root,str+i);
     }
+    if( ( (root->ptrs[get_i('o')])->ptrs[get_i('o')])->ptrs[get_i('o')] != NULL)
+        
     //stree_add_word(&root,"bat$");
     //stree_add_word(&root,"cat$");
     // DFS to print out all strings
@@ -39,7 +41,7 @@ int main()
     do_dfs(&root,"");
    
    // Search for a string
-    if(stree_search_substr(&root,"xy"))
+    if(stree_search_substr(&root,"ooooo"))
         printf("Yes\n");
     else printf("No\n");
     return 0;
@@ -99,7 +101,8 @@ struct Node* path_exists(struct Node** chk_node, int index)
     else{
             // create new node
             struct Node* new_node;
-            alloc_node(&new_node);
+            //alloc_node(&new_node);
+            init_node(&new_node);
             (*chk_node)->ptrs[index] = new_node;
             return new_node;
     }
